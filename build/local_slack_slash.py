@@ -42,22 +42,51 @@ def slash_command():
     Food = Query()
     log_item = grocery_log.get('item')
     log_quant = grocery_log.get('quantity')
+    log_date = grocery_log.get('expire_date')
 
-    #ADD COMMAND
+#ADD COMMAND
     if grocery_log.get ('keyword') == 'add':
-        if fridge_db.contains (Food.item == log_item):
-            db_entry = fridge_db.search(Food.item == log_item)
+        if fridge_db.contains (Food.item == log_item) & fridge_db.contains (Food.expire_date == log_date):
+            db_entry = fridge_db.search((Food.item == log_item) & (Food.expire_date == log_date))
             db_quant= int(db_entry[0]['quantity'])
             new_quant = db_quant + int(log_quant)
-            fridge_db.update ({'quantity': new_quant}, Food.item == log_item)
-            return jsonify (Updated=fridge_db.all())
-            
+            fridge_db.update ({'quantity': new_quant}, (Food.item == log_item) & (Food.expire_date == log_date))
+            return jsonify (Updated=fridge_db.all())           
         else:
             fridge_db.insert(grocery)
-            return jsonify(Added=fridge_db.all())
+            return jsonify (Added=fridge_db.all())
 			
+#REMOVE COMMAND
+    if grocery_log.get ('keyword') == 'remove':
+        if fridge_db.contains (Food.item == log_item):
+            if log_quant == "all":
+                fridge_db.remove ((Food.item == log_item) & (Food.expire_date == log_date))
+            else:
+                db_entry = fridge_db.search((Food.item == log_item) & (Food.expire_date == log_date))
+                db_quant= int(db_entry[0]['quantity'])
+                new_quant = db_quant - int(log_quant)
+                fridge_db.update ({'quantity': new_quant}, (Food.item == log_item) & (Food.expire_date == log_date))
+                if new_quant <= 0:
+                    fridge_db.remove ((Food.item == log_item) & (Food.expire_date == log_date))
+            return jsonify (Updated=fridge_db.all())
+        else:
+            return jsonify ("Sorry, " + log_item + " is not in the fridge.")
 
-    
+#SEARCH COMMAND
+    if grocery_log.get ('keyword') == 'search':
+        if log_quant == "all":
+            return jsonify (fridge_db.all())
+        elif fridge_db.contains (Food.item == log_quant): #Use 'log_quant' since the "search" command only uses 2 arguments
+            db_entry_item = fridge_db.search(Food.item == log_quant)
+            return jsonify ("Yes, you have " + log_quant + ":" , db_entry_item)
+        else:
+            return jsonify ("Oh no, " + log_quant + " is not in the fridge!")
+
+#CLEAR COMMAND
+    if grocery_log.get ('keyword') == 'clear':
+        fridge_db.purge()
+        return jsonify ("Fridge emptied!")
+
 
 
 
