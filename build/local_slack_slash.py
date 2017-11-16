@@ -37,9 +37,24 @@ def slash_command():
             
 #Add grocery info to database
     log_db.insert(grocery_log)
-    fridge_db.insert(grocery)
 
-    return jsonify(InsideTheFridge=fridge_db.all())
+
+    Food = Query()
+    log_item = grocery_log.get('item')
+    log_quant = grocery_log.get('quantity')
+
+    #ADD COMMAND
+    if grocery_log.get ('keyword') == 'add':
+        if fridge_db.contains (Food.item == log_item):
+            db_entry = fridge_db.search(Food.item == log_item)
+            db_quant= int(db_entry[0]['quantity'])
+            new_quant = db_quant + int(log_quant)
+            fridge_db.update ({'quantity': new_quant}, Food.item == log_item)
+            return jsonify (Updated=fridge_db.all())
+            
+        else:
+            fridge_db.insert(grocery)
+            return jsonify(Added=fridge_db.all())
 			
 
     
