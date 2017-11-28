@@ -1,13 +1,29 @@
+#Imports for DB #
 from tinydb import TinyDB, Query
 
+#Imports for FLask server #
 from flask import Flask
 from flask import request
 from flask import jsonify
 
+# Imports for notification scheduling #
+import time
+import logging
+from apscheduler.schedulers.background import BackgroundScheduler
+
+#Declare DBs
 command_db = TinyDB ('command_db.json')
 log_db = TinyDB ('log_db.json')
 fridge_db = TinyDB ('fridge_db.json')
 
+#Declare scheduler
+logging.basicConfig()
+sched = BackgroundScheduler()
+
+hour = 23 # Notification time: 9 am
+minute = 40
+
+#Declare Flask
 app = Flask(__name__)
 
 @app.route('/testmysmartfridge', methods=['GET', 'POST'])
@@ -45,6 +61,9 @@ def slash_command():
         log_quant = grocery_log.get('quantity')
         log_date = grocery_log.get('expire_date')
 
+        def notify():
+            print "Notification from Slack NOW!!!!"
+
 #ADD COMMAND
         if grocery_log.get ('keyword') == 'add':
             if fridge_db.contains (Food.item == log_item) & fridge_db.contains (Food.expire_date == log_date):
@@ -52,6 +71,17 @@ def slash_command():
                 db_quant= int(db_entry[0]['quantity'])
                 new_quant = db_quant + int(log_quant)
                 fridge_db.update ({'quantity': new_quant}, (Food.item == log_item) & (Food.expire_date == log_date))
+
+                 #Expiration Date Notifications
+                if grocery_log.get('expire_date') != 'none':
+                    exp_date = grocery_log.get ('expire_date')
+                    exp_date_array = exp_date.split ("-")
+                    month = exp_date_array [0]
+                    day = exp_date_array [1]
+                    year = '20'+ exp_date_array [2]
+
+                    sched.add_job(notify, trigger='cron', year= year, month= month, day= day, hour= hour, minute= minute)
+                    sched.start()
                 return jsonify (
                     response_type="in_channel", 
                     attachments = [
@@ -60,11 +90,26 @@ def slash_command():
                          "pretext": "Added!",
                          "color": "#ffff00", #Yellow
                          "text": "Updated: " + str(new_quant)+ " " + log_item
+                        },
+                        {
+                         "fallback": "Expiration date notifications set.",
+                         "pretext": "Notification set!",
+                         "color": "#ff69b4", #Pink
+                         "text": "Expiration notification set for " + log_item + ": " + month + " " + day + " " + year
                         }
                     ]
                 )           
             else:
                 fridge_db.insert(grocery)
+                if grocery_log.get('expire_date') != 'none':
+                    exp_date = grocery_log.get ('expire_date')
+                    exp_date_array = exp_date.split ("-")
+                    month = exp_date_array [0]
+                    day = exp_date_array [1]
+                    year = '20'+ exp_date_array [2]
+
+                    sched.add_job(notify, trigger='cron', year= year, month= month, day= day, hour= hour, minute= minute)
+                    sched.start()
                 return jsonify (
                     response_type="in_channel", 
                     attachments = [
@@ -73,6 +118,12 @@ def slash_command():
                          "pretext": "Added!",
                          "color": "#ffff00", #Yellow
                          "text": "Added: " + str(log_quant)+ " " + log_item
+                        },
+                        {
+                         "fallback": "Expiration date notifications set.",
+                         "pretext": "Notification set!",
+                         "color": "#ff69b4", #Pink
+                         "text": "Expiration notification set for " + log_item + ": " + month + " " + day + " " + year
                         }
                     ]
                 )           
