@@ -4,9 +4,23 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 
+# Imports for notification scheduling #
+import time
+import logging
+from apscheduler.schedulers.background import BackgroundScheduler
+
 command_db = TinyDB ('command_db.json')
 log_db = TinyDB ('log_db.json')
 fridge_db = TinyDB ('fridge_db.json')
+
+
+#Declare scheduler
+logging.basicConfig()
+sched = BackgroundScheduler()
+
+hour = 12 # Notification time: 12:45pm
+minute = 45
+
 
 app = Flask(__name__)
 
@@ -38,11 +52,14 @@ def slash_command():
 #Add grocery info to database
     log_db.insert(grocery_log)
 
-
     Food = Query()
     log_item = grocery_log.get('item')
     log_quant = grocery_log.get('quantity')
     log_date = grocery_log.get('expire_date')
+
+
+    def notify():
+        print "Notification from Slack NOW!!!!"
 
 #ADD COMMAND
     if grocery_log.get ('keyword') == 'add':
@@ -51,9 +68,32 @@ def slash_command():
             db_quant= int(db_entry[0]['quantity'])
             new_quant = db_quant + int(log_quant)
             fridge_db.update ({'quantity': new_quant}, (Food.item == log_item) & (Food.expire_date == log_date))
-            return jsonify (Updated=fridge_db.all())           
+
+            #Expiration Date Notifications
+            if grocery_log.get('expire_date') != 'none':
+                exp_date = grocery_log.get ('expire_date')
+                exp_date_array = exp_date.split ("-")
+                month = exp_date_array [0]
+                day = exp_date_array [1]
+                year = '20'+ exp_date_array [2]
+
+                sched.add_job(notify, trigger='cron', year= year, month= month, day= day, hour= hour, minute= minute)
+                sched.start()
+            return jsonify (Updated=fridge_db.all())
+     
         else:
             fridge_db.insert(grocery)
+
+            #Expiration Date Notifications
+            if grocery_log.get('expire_date') != 'none':
+                exp_date = grocery_log.get ('expire_date')
+                exp_date_array = exp_date.split ("-")
+                month = exp_date_array [0]
+                day = exp_date_array [1]
+                year = '20'+ exp_date_array [2]
+
+                sched.add_job(notify, trigger='cron', year= year, month= month, day= day, hour= hour, minute= minute)
+                sched.start()
             return jsonify (Added=fridge_db.all())
 			
 #REMOVE COMMAND
