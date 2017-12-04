@@ -29,23 +29,26 @@ def check_expire_date():
             db_month = int(exp_date_array [0])
             db_day = int(exp_date_array [1])
             db_year = int('20'+ exp_date_array [2])
-            if db_year <= now_year:
-                if db_month<= now_month:
-                    if db_day<=now_day: #Gets date earier than current date
-                        expired_list.append ("Your " + db_entry['item']+ " are expired. They expired " + db_entry['expire_date'] + "\n")
-                        expired_str =''.join (expired_list)
+            if db_year <= now_year: #Gets date earier than current date
+                if db_month < now_month:
+                    expired_list.append (db_entry['item']+ ": *_Expired_* ~ Expiration Date: " + "*"+ db_entry['expire_date'] +"*" + "\n")
+                if db_month == now_month:
+                    if db_day <= now_day:
+                        expired_list.append (db_entry['item']+ ": *_Expired_* ~ Expiration Date: " + "*"+ db_entry['expire_date'] +"*" + "\n")
+            expired_str =''.join (expired_list)
         else:
-            no_date_list.append ("Your "+ db_entry['item'] + " have no expiration date... \n")
+            no_date_list.append (db_entry['item'] + ": No expiration date\n")
             no_date_str =''.join(no_date_list)
         i = i+1
-    
+
     payload= {
         'attachments':[
             {
              "fallback": "Expiration notification.",
-             "pretext": "NOTIFICATION",
+             "pretext": "*NOTIFICATION*",
              "color": "#ff69b4", #Pink
-             "text": ""+ expired_str
+             "text": expired_str,
+             "mrkdwn_in": ["text","pretext"]
             },
             {
              "fallback": "Expiration notification.",
@@ -55,7 +58,9 @@ def check_expire_date():
     }
     r = requests.post(webhook_URL, json=payload)  
 
-schedule.every(1).minute.do(check_expire_date)
+#schedule.every(1).minute.do(check_expire_date)
+#After testing make this       
+schedule.every(1).day.at("20:50").do(check_expire_date)
 
 while True:
     schedule.run_pending()
