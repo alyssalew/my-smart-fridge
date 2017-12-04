@@ -59,8 +59,16 @@ def check_expire_date():
     r = requests.post(webhook_URL, json=payload)  
 
 #schedule.every(1).minute.do(check_expire_date)
-#After testing make this       
-schedule.every(1).day.at("20:50").do(check_expire_date)
+
+#*******Time based on timezone of server -- UTC  (A string in HH:MM format) *******#
+    # UTC to PST    -08:00 hr
+    # UTC to EST    -05:00 hr
+    # UTC to CST    -06:00 hr
+
+
+# Notify 9:00 am PST with server on UTC
+schedule.every().day.at("17:00").do(check_expire_date)
+
 
 while True:
     schedule.run_pending()
