@@ -87,3 +87,8 @@ def slash_command():
     if grocery_log.get ('keyword') == 'clear':
         fridge_db.purge()
         return jsonify ("Fridge emptied!")
+
+
+#HELP COMMAND
+    if grocery_log.get ('keyword') == 'help':
+        return jsonify ("Help is on it's way!!")
