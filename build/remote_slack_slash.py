@@ -62,7 +62,7 @@ def slash_command():
                         {
                          "fallback": "Updating to add an existing item.",
                          "pretext": "Added!",
-                         "color": "#ffff00", #Yellow
+                         "color": "ffda00", #Golden Yellow
                          "text": "Updated: " + str(new_quant)+ " " + log_item
                         }
                     ]
@@ -92,7 +92,7 @@ def slash_command():
                             attachments = [
                                 {
                                  "fallback": "Remove all of an item with a certain date.",
-                                 "color": "warning", #Orange
+                                 "color": "FF6600", #Red-Orange
                                  "text": "Removed all " + log_item + " with the expiration date " + "*" + log_date + "*" + " from your fridge!",
                                  "mrkdwn_in": ["text"]
                                 }
@@ -105,7 +105,7 @@ def slash_command():
                             attachments = [
                                 {
                                  "fallback": "Remove all of an item.",
-                                 "color": "warning", #Orange
+                                 "color": "#FF6103", #Cadmium Orange
                                  "text": "Removed all " + log_item + " from your fridge!"
                                 }
                             ]
@@ -122,7 +122,7 @@ def slash_command():
                         attachments = [
                             {
                              "fallback": "Remove all of an item.",
-                             "color": "warning", #Ornage
+                             "color": "#FF6103", #Cadmium Orange
                              "text": "Removed all " + log_item + " from your fridge!"
                             }
                         ]
@@ -133,7 +133,7 @@ def slash_command():
                         {
                          "fallback": "Removing certain amount of item.",
                          "pretext": "Removed!",
-                         "color": "#ffff00", #Yellow
+                         "color": "warning", #Orange
                          "text": "Updated: " + str(new_quant)+ " " + log_item
                         }
                     ]
