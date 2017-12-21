@@ -9,7 +9,7 @@ import datetime
 from tinydb import TinyDB, Query
 fridge_db = TinyDB ('fridge_db.json')
 
-webhook_URL = 'https://hooks.slack.com/services/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'
+webhook_URL = 'https://hooks.slack.com/services/xxxxxxxx/xxxxxxx/xxxxxxxxxxxxx' #Change to your webhook URL found on Slack admin page
 
 # Get and define current date
 now=datetime.datetime.now()
