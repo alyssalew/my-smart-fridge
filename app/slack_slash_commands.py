@@ -28,7 +28,7 @@ log_db = TinyDB ('log_db.json') #DB to store parsed command text
 
 #Declare Flask app
 app = Flask(__name__)
-@app.route('/testmysmartfridge', methods=['GET', 'POST'])
+@app.route('/mysmartfridge', methods=['GET', 'POST'])
 
 def slash_command():
 ##Parse necessary command parameters
