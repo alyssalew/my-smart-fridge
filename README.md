@@ -46,6 +46,16 @@ python expiration_date_notifications.py
 ``` 
 You can run the Flask app and scheduler in the the background by using `nohup`
 
+## Demo
+### Add an item
+![Demo](https://user-images.githubusercontent.com/4656934/34464326-fa25c1b8-ee2e-11e7-9f05-dfd49b6cfaea.gif)
+### Search for an item
+![Demo](https://user-images.githubusercontent.com/4656934/34464328-0154260a-ee2f-11e7-98a6-fc824d7800b8.gif)
+### List all contents
+![Demo](https://user-images.githubusercontent.com/4656934/34464327-fe198bc4-ee2e-11e7-8993-541163a3790a.gif)
+### Expiration date notification
+![Demo](https://user-images.githubusercontent.com/4656934/34464325-f0fda628-ee2e-11e7-8cde-e58a298e393f.png)
+
 
 ## Available Commands
 
