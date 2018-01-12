@@ -1,6 +1,6 @@
 # MySmartFridge
 
-MySmartFridge is a refrigerator management web application with Slack slash command integration. The application provides refrigerator contents tracking and food expiration date notifications. Since Slack is a multi-platform application, it gives you the ability to use MySmartFridge on your desktop or mobile device.
+MySmartFridge is a refrigerator management application with Slack slash command integration. The application tracks refrigerator contents and notifies when food expires. Since Slack is a multi-platform application, it gives you the ability to use MySmartFridge on your desktop or mobile device.
 
 The application is written in Python and takes advantage of the capability to create your own Slack apps for integration into Slack workspaces and channels. MySmartFridge is built on receiving and responding to Slack slash commands in the form of HTTP POST requests and sends notifications to Slack as an incoming webhook.
 
@@ -33,7 +33,7 @@ The application is written in Python and takes advantage of the capability to cr
 		 - Add a new command --- “***mysmartfridge***”
 		 - For the “Request URL” field enter your public IP address at the port you configured (i.e. `http://xx.xxx.xx.x:5000/mysmartfridge`)
     - You may need to reinstall the Slack app after configuring the slash commands
-    - By adding both Incoming Webhooks and Slack Slash Commands, your slack app should be installed in your workspace (verify that there is a check mark next to “Install your app to your workspace”)
+    - By adding both Incoming Webhooks and Slack Slash Commands, your Slack app should be installed in your workspace (verify that there is a check mark next to “Install your app to your workspace”)
  4. Configure *"get_expired_items.py"*
     - Set variable **webhook_URL** to the incoming webhook URL generated as part of the Slack setup process
  5. Deploy Slack slash command and expiration date checker onto your EC2 server
