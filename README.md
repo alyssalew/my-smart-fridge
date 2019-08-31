@@ -51,7 +51,6 @@ export FLASK_APP=slack_slash_commands.py
 nohup flask run --host=0.0.0.0 &
 
 nohup python expiration_date_notifications.py &
-
 ```
 All outputs from Flask and the python file will by default be sent to *"nohup.out"*
 
@@ -61,7 +60,6 @@ All outputs from Flask and the python file will by default be sent to *"nohup.ou
 ps -fA 
 
 #  Or find the one we care about:
-
 ps -fA | grep python
 
 # And kill the process for our Flask server by its PID:
