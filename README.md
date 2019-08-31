@@ -36,7 +36,8 @@ The application is written in Python and takes advantage of the capability to cr
     - By adding both Incoming Webhooks and Slack Slash Commands, your Slack app should be installed in your workspace (verify that there is a check mark next to “Install your app to your workspace”)
  4. Configure *"get_expired_items.py"*
     - Set variable **webhook_URL** to the incoming webhook URL generated as part of the Slack setup process
- 5. Deploy Slack slash command and expiration date checker onto your EC2 server
+ 5. Deploy the **"app"** directory onto your EC2 server
+    - My current version is deployed using `scp`
  6. SSH onto your server and run:
 ```
 export FLASK_APP=slack_slash_commands.py
@@ -45,6 +46,27 @@ flask run --host=0.0.0.0
 python expiration_date_notifications.py
 ``` 
 You can run the Flask app and scheduler in the the background by using `nohup`
+```
+export FLASK_APP=slack_slash_commands.py
+nohup flask run --host=0.0.0.0 &
+
+nohup python expiration_date_notifications.py &
+```
+All outputs from Flask and the python file will by default be sent to *"nohup.out"*
+
+
+7. To view and restart the app, SSH onto your server and view the processes currently running:
+```
+ps -fA 
+
+#  Or find the one we care about:
+ps -fA | grep python
+
+# And kill the process for our Flask server by its PID:
+
+kill <PID>
+```
+To restart go back to step 6.
 
 ## Demo
 ### Add an item
